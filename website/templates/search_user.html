@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+
+{% block title %} search {% endblock %}
+
+
+{% block body %}
+
+
+ <div class="container mt-4">
+        <form method="post">
+            <div class="form-group float-left">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="search_by_number"
+                  name="search_by_number"
+                  placeholder="Enter number">
+            </div>
+        </form>
+        <table class="table table-success table-striped table-hover" border="1">
+
+
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Number</th>
+                    <th>Role</th>
+                    <th>Royalty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+
+                {% if  client.royalty == 2 %}
+                    <tr style="background-color: #7FFF00">
+                        <td>{{client.name}}</td>
+                        <td>{{client.number}}</td>
+                        <td>{{client.role}}</td>
+                        <td>хороший</td>
+                    </tr>
+                {% elif client.royalty == 1 %}
+                    <tr style="background-color: yellow">
+                        <td>{{client.name}}</td>
+                        <td>{{client.number}}</td>
+                        <td>{{client.role}}</td>
+                        <td>средний</td>
+                    </tr>
+                {% else %}
+                    <tr style="background-color: red">
+                        <td>{{client.name}}</td>
+                        <td>{{client.number}}</td>
+                        <td>{{client.role}}</td>
+                        <td>плохой</td>
+                    </tr>
+                {% endif %}
+
+
+
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+  {% endblock %}

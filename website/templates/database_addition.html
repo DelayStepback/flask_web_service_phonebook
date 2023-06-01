@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+
+{% block title %} base {% endblock %}
+
+
+{% block body %}
+
+
+<!-- root block-->
+<div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-success" role="alert">
+                                {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+        {% endwith %}
+
+
+    <div class="row row-cols-auto" >
+
+        <div class="col-4">
+            {% if curr_root.id == 0 %}
+            <h3> Текущий каталог: <a href="/datebase-Add/0/1"> {{ curr_root.location }} </a></h3>
+            {% else %}
+            <h3> Текущий каталог: <a href="/datebase-Add/{{curr_root.id_parent}}/1"> ../{{ curr_root.location }} </a></h3>
+            {% endif %}
+        </div>
+
+        <div class="col-6">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button class="btn btn-success float-right" data-bs-toggle="modal" data-bs-target="#insert_root">Добавить каталог</button>
+                <button class="btn btn-warning float-right" data-bs-toggle="modal" data-bs-target="#update_root{{curr_root.id}}">Обновить {{curr_root.location}}</button>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+
+    <div class="" >
+
+        <h3>
+            {% if child_roots[0] %}
+                    Вложенные каталоги: <br>
+            {% endif %}
+            {% for child_root in child_roots %}
+            <a href="/datebase-Add/{{child_root.id}}/1">{{ child_root.location }}</a> <br>
+            {% endfor %}
+
+        </h3>
+
+    </div>
+
+    <br/>
+</div>
+
+ <div class="container mt-4">
+
+
+
+
+
+        <form method="post">
+        <div class="form-group float-left">
+          <input
+              type="text"
+              class="form-control"
+              id="search_by_name"
+              name="search_by_name"
+              placeholder="Поиск">
+        </div>
+        </form>
+
+
+        <button class="btn btn-success float-right" data-bs-toggle="modal" data-bs-target="#insert_modal">Добавить запись</button>
+
+
+        <table class="table table-success table-striped table-hover" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Number</th>
+                    <th>Role</th>
+                    <th>Royalty</th>
+                     <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% if client_base_exist %}
+                {% for client in clients %}
+
+                {% if  client.royalty == 2 %}
+                    <tr style="background-color: #7FFF00">
+                        <td>{{client.name}}</td>
+                        <td>{{client.number}}</td>
+                        <td>{{client.role}}</td>
+                        <td>хороший</td>
+                        <td>
+                            <a href="/update/{{client.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{client.id}}">Update</a>
+                             <a href="/delete/{{client.id}}" class="btn btn-danger" onclick="return confirm('Удалить {{ client.name }} ?')">Delete</a>
+                        </td>
+                    </tr>
+                {% elif  client.royalty == 1 %}
+                    <tr style="background-color: yellow">
+                        <td>{{client.name}}</td>
+                        <td>{{client.number}}</td>
+                        <td>{{client.role}}</td>
+                        <td>средний</td>
+                        <td>
+                            <a href="/update/{{client.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{client.id}}">Update</a>
+                             <a href="/delete/{{client.id}}" class="btn btn-danger" onclick="return confirm('Удалить {{ client.name }} ?')">Delete</a>
+                        </td>
+                    </tr>
+                {% else  %}
+                    <tr style="background-color: red">
+                        <td>{{client.name}}</td>
+                        <td>{{client.number}}</td>
+                        <td>{{client.role}}</td>
+                        <td>плохой</td>
+                        <td>
+                            <a href="/update/{{client.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{client.id}}">Update</a>
+                             <a href="/delete/{{client.id}}" class="btn btn-danger" onclick="return confirm('Удалить {{ client.name }} ?')">Delete</a>
+                        </td>
+                    </tr>
+
+                {% endif %}
+
+
+                     <!-- update model Client -->
+ <div id="modaledit{{client.id}}" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Update Client</h4>
+         </div>
+         <div class="modal-body">
+
+            <form method="post" action="{{url_for('update')}}">
+
+
+               <div class="form-group">
+
+                  <label>Name:</label>
+		           <input type="hidden"  name="id" value="{{client.id}}">
+                  <input type="text" class="form-control" name="name_client" value="{{client.name}}" >
+
+               </div>
+
+                <div class="form-group">
+
+                  <label>Number:</label>
+		           <input type="hidden"  name="id" value="{{client.number}}">
+                  <input type="text" class="form-control" name="number_client" value="{{client.number}}" >
+
+               </div>
+
+                <div class="form-group">
+                  <label>role:</label>
+		           <input type="hidden"  name="id" value="{{client.role}}">
+                  <input type="text" class="form-control" name="role_client" value="{{client.role}}" >
+               </div>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio12" value="option1" />
+                  <label class="form-check-label" for="inlineRadio1">плохой</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio22" value="option2" />
+                  <label class="form-check-label" for="inlineRadio2">средний</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio32" value="option3"  />
+                  <label class="form-check-label" for="inlineRadio3">хороший</label>
+                </div>
+
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Update Client</button>
+               </div>
+
+
+            </form>
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Modal  for inserting the client -->
+<div id="insert_modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Add Client</h4>
+         </div>
+         <div class="modal-body">
+
+            <form method="post" action="{{url_for('insert_client')}}">
+
+
+               <div class="form-group">
+                  <label>Name:</label>
+                  <input type="text" class="form-control" name="name_client" required="1">
+               </div>
+
+
+                <div class="form-group">
+                  <label>Number:</label>
+                  <input type="number" class="form-control" name="number_client" required="1">
+               </div>
+
+                 <div class="form-group">
+                  <label>Role:</label>
+                  <input type="text" class="form-control" name="role_client" required="1">
+               </div>
+
+
+
+
+                <label for="location_client">Выбрать каталог:</label>
+                <select name="location_client" id="location_client">
+                    <option value="{{curr_root.id}}" selected>{{ curr_root.location }}</option>
+                    {% for child_root in child_roots %}
+                    <option value="{{child_root.id}}">{{ child_root.location }}</option>
+                    {% endfor %}
+                </select>
+
+                </br>
+
+
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" />
+                  <label class="form-check-label" for="inlineRadio1">плохой</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" />
+                  <label class="form-check-label" for="inlineRadio2">средний</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"  />
+                  <label class="form-check-label" for="inlineRadio3">хороший</label>
+                </div>
+
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Add client</button>
+               </div>
+
+
+            </form>
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div>
+
+<!--                insert root!-->
+<div id="insert_root" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Add folder</h4>
+         </div>
+         <div class="modal-body">
+
+            <form method="post" action="{{url_for('insert_root')}}">
+
+                <div class="form-group">
+                  <label>Name:</label>
+                  <input type="text" class="form-control" name="name_root" required="1">
+               </div>
+
+
+                <label for="location_root">Выбрать каталог:</label>
+                <select name="location_root" id="location_root">
+                    <option value="{{curr_root.id}}" selected>{{ curr_root.location }}</option>
+                  {% for child_root in child_roots %}
+                  <option value="{{child_root.id}}">{{ child_root.location }}</option>
+                  {% endfor %}
+                </select>
+
+
+                <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Создать каталог</button>
+               </div>
+
+            </form>
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div>
+
+
+<!--                update root!-->
+<div id="update_root{{curr_root.id}}" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Обновить каталог "{{curr_root.location}}"</h4>
+         </div>
+         <div class="modal-body">
+
+            <form method="post" action="{{url_for('update_root', root_id = curr_root.id)}}">
+
+                <div class="form-group">
+                  <label>ReName:</label>
+                  <input type="text" class="form-control" name="location_name" required="1">
+               </div>
+
+
+                <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Обновить каталог</button>
+               </div>
+
+            </form>
+
+
+
+         </div>
+
+
+          {% if curr_root.id != 0 %}
+         <div class="modal-footer">
+             <form method="post" action="{{url_for('delete_root', root_id = curr_root.id)}}">
+                 <button class="btn btn-danger mt-4" type="submit" onclick="return confirm('Удалить {{ curr_root.location }} и все вложенные каталоги(включая данные) ?')">Удалить</button>
+             </form>
+
+             <button type="button" class="btn btn-secondary mt-4" data-bs-dismiss="modal">Close</button>
+         </div>
+          {% endif %}
+      </div>
+   </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+    </tbody>
+</table>
+      <div class=pagination>
+        {% for curr_page in clients.iter_pages() %}
+          {% if curr_page %}
+            {% if curr_page != clients.page %}
+
+<!--                  LOCATION -->
+              <a class="list-group-item" href="{{ url_for('database.datebase_Add', location_id = curr_root.id, curr_page=curr_page) }}">{{ curr_page }}</a>
+            {% else %}
+              <strong class="list-group-item">{{ curr_page }}</strong>
+            {% endif %}
+          {% else %}
+            <span class="ellipsis list-group-item">…</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class=page-items>
+        <h5>
+        {% if clients.total != 0 %}
+            {{ clients.first }} - {{ clients.last }} of {{ clients.total }}
+        {% else %}
+            No results.
+        {% endif %}
+        </h5>
+    </div>
+</div>
+{% endblock %}

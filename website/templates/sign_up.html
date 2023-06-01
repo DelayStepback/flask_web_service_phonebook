@@ -1,0 +1,192 @@
+{% extends "base.html" %} {% block title %} Sign up {% endblock %}
+{% block body %}
+<!--creating-->
+
+
+
+
+ <div class="container mt-4" id = "mainres">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+        <button class="btn btn-success float-right" data-bs-toggle="modal" data-bs-target="#insert_modal">Add User</button>
+
+        <table class="table table-success table-striped table-hover" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Login</th>
+                    <th>Permission</th>
+                     <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if users_base_exist %}
+                {% for user in users %}
+                    <tr>
+                        <td>{{user.id}}</td>
+                        <td>{{user.login}}</td>
+                        <td>{{user.what_permission()}}</td>
+                        <td>
+                            <a href="/update_user/{{user.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{user.id}}">Update</a>
+                             <a href="/delete_user/{{user.id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                        </td>
+                    </tr>
+
+
+                     <!-- update model -->
+ <div id="modaledit{{user.id}}" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Update user</h4>
+         </div>
+         <div class="modal-body">
+
+            <form method="post" action="{{url_for('update_user')}}">
+
+
+               <div class="form-group">
+
+                  <label>Login:</label>
+		           <input type="hidden"  name="id" value="{{user.id}}">
+                  <input type="text" class="form-control" name="login_user" value="{{user.login}}" >
+
+               </div>
+
+               <div class="form-group">
+
+                  <label>Password:</label>
+		           <input type="hidden"  name="id" value="{{user.id}}">
+                  <input type="text" class="form-control" name="password_user" >
+
+               </div>
+
+
+
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Update user</button>
+               </div>
+
+
+            </form>
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+                {% endfor %}
+                {% endif %}
+
+
+
+                <!-- Modal  for inserting -->
+<div id="insert_modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Add user</h4>
+         </div>
+         <div class="modal-body">
+
+            <form method="post" action="{{url_for('insert_user')}}">
+
+
+                <div class="form-group">
+                    <label for="login">Login</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="login"
+                            name="login"
+                            placeholder="Login">
+               </div>
+               <div class="form-group">
+                <label for="password1">Password</label>
+                <input
+                        type="password"
+                        class="form-control"
+                        id="password1"
+                        name="password1"
+                        placeholder="Enter password">
+               </div>
+
+               <div class="form-group">
+                <label for="password2">Password (Confirm)</label>
+                <input
+                        type="password"
+                        class="form-control"
+                        id="password2"
+                        name="password2"
+                        placeholder="Confirm Password">
+               </div>
+
+
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="RadiosUser" id="RadioUser" value="user" checked>
+                <label class="form-check-label" for="RadioUser">
+                  User
+                </label>
+              </div>
+
+
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="RadiosUser" id="RadioAdmin" value="admin">
+                <label class="form-check-label" for="RadioAdmin">
+                  Admin
+                </label>
+              </div>
+
+
+
+
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Add user</button>
+               </div>
+
+
+            </form>
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div>
+
+
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+
+
+
+
+
